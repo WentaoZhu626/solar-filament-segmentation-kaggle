@@ -1,0 +1,44 @@
+{
+ "encoder": "tu-convnext_tiny:cnxt,tu-efficientnet_b4:effb4,tu-regnety_032:regy",
+ "best_c": [
+  "faint",
+  0.3
+ ],
+ "s_best": 0.35,
+ "B_CFG": {
+  "thr": 0.6,
+  "min_area": 50,
+  "lo": null,
+  "link": 40
+ },
+ "T_LOW": [
+  0.5,
+  0.4,
+  0.3
+ ],
+ "MIN_EXTRA": 50,
+ "FEATS": [
+  "log area",
+  "mean p",
+  "max p",
+  "frac p>0.8",
+  "mean spine p",
+  "elongation",
+  "img inside",
+  "contrast",
+  "radius",
+  "ring p",
+  "dist to big filament",
+  "log #big filaments",
+  "source t"
+ ],
+ "final_pp": [
+  "B",
+  {
+   "thr": 0.5,
+   "min_area": 400,
+   "lo": null,
+   "link": 40
+  }
+ ]
+}
