@@ -8,8 +8,11 @@ VIS = os.environ.get('VIS', '/root/autodl-tmp/runs/vis/vis.pkl'); OUT = os.envir
 V = pickle.load(open(VIS, 'rb')); REC = V['rec']
 IMG = np.load('/root/autodl-tmp/cache/img.npy', mmap_mode='r')
 def dec(b): return cv2.imdecode(np.frombuffer(b, np.uint8), cv2.IMREAD_UNCHANGED)
-def polymask(poly):
-    m = np.zeros((2048, 2048), np.uint8); cv2.fillPoly(m, [np.round(poly).astype(np.int32)], 1); return m
+from pycocotools import mask as _mu
+def polymask(poly):                     # official rasterisation (pycocotools, as the host scorer); cv2.fillPoly is ~11% larger
+    if os.environ.get('RASTER', 'coco') == 'cv2':
+        m = np.zeros((2048, 2048), np.uint8); cv2.fillPoly(m, [np.round(poly).astype(np.int32)], 1); return m
+    return _mu.decode(_mu.frPyObjects([np.asarray(poly, np.float64).ravel().tolist()], 2048, 2048))[..., 0]
 def cand_masks(r):
     labs = {'B': dec(r['B_png']), 0.3: dec(r['F_png'])}
     return [labs[s] == l for s, l in r['cand_src']]
@@ -138,6 +141,22 @@ if STAGE == 'eval':
             order = np.argsort([-M[META_[c][1]].sum() for c in kept]); taken = np.zeros((2048, 2048), bool)
             for a in order: out[a] = out[a] & ~taken; taken |= out[a]
             variants[t] = out
+        if os.environ.get('OPT', '1') == '1':          # per-instance expected-IoU-optimal mask (Nowozin 2014): top-k pixels by p
+            out = []
+            for c in kept:
+                _, j, _, _, oy, ox, side, _ = META_[c]
+                pr = cv2.resize(PR_[c], (side, side), interpolation=cv2.INTER_LINEAR).astype(np.float32) / 255
+                fl = pr.ravel(); order_ = np.argsort(-fl); cs_ = np.cumsum(fl[order_]); tot = cs_[-1]
+                kk = np.arange(1, len(fl) + 1); eiou = cs_ / (tot + kk - cs_)
+                kb = int(np.argmax(eiou)) + 1; thr_ = fl[order_[kb - 1]]
+                p = pr >= thr_
+                full = np.zeros((2048, 2048), bool); ya, xa = max(oy, 0), max(ox, 0); yb, xb = min(oy + side, 2048), min(ox + side, 2048)
+                full[ya:yb, xa:xb] = p[ya - oy:yb - oy, xa - ox:xb - ox]
+                if not full.any(): full = M[j]
+                out.append(full)
+            order = np.argsort([-M[META_[c][1]].sum() for c in kept]); taken = np.zeros((2048, 2048), bool)
+            for a in order: out[a] = out[a] & ~taken; taken |= out[a]
+            variants['opt'] = out
         res = {}
         for name, preds in variants.items():
             S = np.zeros(4); per = []
@@ -148,6 +167,7 @@ if STAGE == 'eval':
     t0 = time.time()
     res = Parallel(n_jobs=int(os.environ.get('NJ', 12)))(delayed(one)(n, REC[n], byimg[n], [META[c] for c in byimg[n]], [np.array(PRED[c]) for c in byimg[n]]) for n in range(len(REC)))
     folds = np.array([r['fold'] for r in REC])
+    if os.environ.get('SAVE'): pickle.dump(dict(res=res, folds=folds, fn=[r['fn'] for r in REC]), open(os.environ['SAVE'], 'wb'))
     for name in res[0]:
         S = sum(x[name] for x in res); pq = S[0] / (S[1] + 0.5 * S[2] + 0.5 * S[3])
         pf = []

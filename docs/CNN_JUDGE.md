@@ -28,3 +28,8 @@ folds better without better AUC; the remaining error is mostly annotator disagre
 
 Weights: `weights/cnn_judge/{r34_128,cnxt_128,effb3_128,r50_128,r34_192}/fold{0-4}.pth` (fp16 state dicts of timm
 `resnet34`, `convnext_tiny`, `efficientnet_b3`, `resnet50`, `resnet34` with `in_chans=7, num_classes=1`).
+
+## Ensemble-disagreement features (not adopted)
+Seven features from the 3 member maps inside each candidate (per-pixel std across members, range, spread of member means,
+votes): corr(disagreement, y) = -0.59, but GBM 0.4406 -> 0.4406 and blend 0.4481 -> 0.4477. Redundant with the mean
+probability and the CNN judge. Script: `stage2/experiments/uncertainty_features.py`.

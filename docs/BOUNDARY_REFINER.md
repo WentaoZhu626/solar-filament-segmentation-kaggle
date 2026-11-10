@@ -1,33 +1,36 @@
 # Boundary refiner (stage 2)
 
-Scripts: `stage2/refine.py` (stages `crops` / `train` / `eval`) and `stage2/refine_test.py` (test submission: CNN judge
-selection + refined masks).
+Scripts: `stage2/refine.py` (stages `crops` / `train` / `eval`) and `stage2/refine_test.py` (test submission: CNN-judge
+selection + refined masks). All numbers are out-of-fold on 707 training observations with the **official** PQ bookkeeping
+(pycocotools rasterisation of the annotations, IoU > 0.5, pooled over annotator views).
 
 ## Method
 - One crop per candidate: square of side 1.3 x max(bbox side) + 48 px centred on the candidate, resized to 256 px.
 - Input (4 channels): pre-processed image, ensemble probability, the candidate's own mask, union of the other candidates.
-- Target: mean of the annotators' masks that overlap the candidate with IoU > 0.2 (soft where annotators disagree);
-  5189 of 9795 candidates have a target, the rest are not used for training.
-- smp U-Net with ResNet34 encoder (ImageNet), BCE + soft Dice, D4 augmentation, 20 epochs, AdamW + OneCycle, batch 32,
-  about 4.5 min per fold on one RTX 4080 SUPER. Same month-grouped 5 folds; D4 TTA at prediction time; test = mean of the
-  5 fold models.
-- Paste back: resize the crop probability to the crop size, threshold 0.5, keep the original mask if the result is empty;
-  overlaps are resolved by original area (the larger instance keeps the pixels), so instances never overlap.
+- Target: mean of the annotators' masks (pycocotools raster, as the official scorer) that overlap the candidate with
+  IoU > 0.2; 5189 of 9795 candidates have a target.
+- smp U-Net, ResNet34 encoder (ImageNet), BCE + soft Dice, D4 augmentation, 20 epochs, AdamW + OneCycle, batch 32
+  (~2.3 min per fold on an RTX 4080 SUPER). Month-grouped 5 folds; D4 TTA; test = mean of the 5 fold models.
+- Paste back: threshold 0.5, keep the original mask if empty; overlaps resolved by area (instances never overlap).
 
-## Out-of-fold results (own rasterisation of the annotations, about 0.006 above the official-style number)
-| selection | original masks | refined masks | per fold (refined) |
-|---|---|---|---|
-| GBM filter | 0.4468 | 0.4568 | 0.4618 / 0.4662 / 0.4335 / 0.4594 / 0.4644 (5/5 better) |
-| **CNN judge (final)** | 0.4543 | **0.4655** | 0.4668 / 0.4704 / 0.4459 / 0.4716 / 0.4738 (5/5 better) |
+## Results
+| selection | original masks | refined t 0.4 | **refined t 0.5** | refined t 0.6 |
+|---|---|---|---|---|
+| GBM filter | 0.4407 | 0.4443 | **0.4453** | 0.4446 |
+| CNN judge (final) | 0.4482 | 0.4531 | **0.4542** | 0.4530 |
 
-The gain is mostly recognition quality: about 85 near-miss predictions cross IoU 0.5 (TP 5096 -> 5185, FP 2032 -> 1943);
-segmentation quality rises only 0.683 -> 0.688. Refined masks are about 10 % larger: annotators draw filaments wider than
-the U-Net. Thresholds 0.3 / 0.4 / 0.5 / 0.6 give 0.4529 / 0.4554 / 0.4568 / 0.4556 on the GBM selection.
+- CNN-judge selection per fold: 0.4501 / 0.4525 / 0.4296 / 0.4532 / 0.4562 -> 0.4541 / 0.4567 / 0.4358 / 0.4612 / 0.4638
+  (5/5 better). TP / FP / FN 5063 / 2065 / 3136 -> 5105 / 2023 / 3094; SQ 0.678 -> 0.682.
+- Paired bootstrap over images (2000 resamples): +0.0060, 95 % CI [+0.0040, +0.0081]; month-block bootstrap
+  [+0.0042, +0.0076]. Per image: better 447, worse 236, equal 24.
+- Public-leaderboard-like random 90-image subsets: PQ standard deviation 0.012; the paired gain (+0.006 +- 0.003) is often
+  invisible at two decimals. Public leaderboard: 0.39.
+- Test set: 1074 filaments, 0 overlapping pixels, median IoU 0.94 with the unrefined masks, median area ratio 1.00.
 
-Test set: 1074 filaments, 0 overlapping pixels, median IoU 0.91 with the unrefined masks. Public leaderboard 0.39 (the
-public board uses about 90 images at two decimals, so +0.01 is below its resolution).
-
-Also tried (out of fold, GBM selection, official bookkeeping, baseline 0.4406): geometric mean of the 3 members 0.4361;
-D4 TTA for all 15 U-Nets 0.4408.
+## Lesson: rasterise the annotations exactly like the scorer
+A first version (Nov 9) rasterised the polygons with `cv2.fillPoly`. Those masks are about 11 % larger than the
+pycocotools masks used by the official scorer (median area ratio 1.107, IoU 0.88 between the two rasters on 1045
+polygons). The refiner learned the wider masks and looked +0.010 better when the evaluation used the same cv2 raster, but
+with the official raster it was slightly worse (0.4481 -> 0.4464). Targets and evaluation now both use pycocotools.
 
 Weights: `weights/refine/fold{0-4}.pth` (fp16 state dicts of `smp.Unet('resnet34', in_channels=4, classes=1)`).

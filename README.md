@@ -5,14 +5,17 @@ Instance segmentation of solar filaments on GONG H-alpha full-disk images
 
 **Current pipeline:** 3 encoders x 5 folds (15 U-Nets) -> spine-guided instances + faint candidates -> keep rule
 0.6 x mean of 5 CNN judges + 0.4 x GBM filter >= 0.4 -> stage-2 boundary refiner (U-Net on a crop around each kept
-filament). Out-of-fold PQ **0.4655** with our rasterisation of the annotations (about **0.459** with the official
-bookkeeping), public leaderboard 0.39.
+filament). Out-of-fold PQ **0.4542** (official bookkeeping, 707 observations), public leaderboard 0.39.
 
 | stage | OOF PQ (official bookkeeping) |
 |---|---|
-| 15 U-Nets + B + faint candidates + GBM filter (steps 1–7 below) | 0.4406 – 0.4410 |
-| + CNN judge (`docs/CNN_JUDGE.md`) | 0.4481 |
-| + boundary refiner (`docs/BOUNDARY_REFINER.md`) | ~0.459 (0.4655 own rasterisation, +0.011 on 5/5 folds) |
+| 15 U-Nets + B + faint candidates + GBM filter (steps 1–7 below) | 0.4406 |
+| + CNN judge (`docs/CNN_JUDGE.md`) | 0.4482 |
+| + boundary refiner (`docs/BOUNDARY_REFINER.md`) | **0.4542** (+0.0060, 95 % CI [+0.0040, +0.0081], 5/5 folds) |
+
+Analyses: `docs/DECISION_THEORY.md` (keep threshold = PQ/2, derived and verified), `docs/CONFLICT_GRAPH.md` (conflict-graph /
+component-tree selection, oracle analysis — not adopted). Tried without gain: D4 TTA (+0.0002), geometric-mean ensemble
+(-0.0045), ensemble-disagreement features (-0.0004), component-tree selection (0.4477 vs 0.4542).
 
 ## Method in one page
 
@@ -45,7 +48,7 @@ bookkeeping), public leaderboard 0.39.
    probability, candidate mask, 512-px context with the other candidates) and predicts the share of annotators that would
    match it; 5 backbones x 5 folds are averaged and blended with the GBM score (0.6 / 0.4), keep >= 0.4.
 9. **Boundary refiner** (`stage2/refine.py`): every kept filament is re-segmented by a U-Net on a 256-px crop (image,
-   probability, own mask, other candidates) trained to reproduce the annotators' outline; overlaps resolved by area.
+   probability, own mask, other candidates) trained to reproduce the annotators' outline (pycocotools raster, as the scorer); overlaps resolved by area.
 
 ## Results (OOF PQ, 707 observations)
 
@@ -76,6 +79,7 @@ weights/                 15 fold models (fp16 state dicts) + filter_export.{json
                          cnn_judge/<backbone>/fold{0-4}.pth (25 CNN judges), refine/fold{0-4}.pth (boundary refiner)
 stage2/                  CNN judge (cnn_filter.py, cnn_test.py), boundary refiner (refine.py, refine_test.py),
                          vis_prep.py (rebuilds the out-of-fold candidates and filter features)
+stage2/experiments/      conflict graph / component tree, keep-threshold theory, paired bootstrap, uncertainty features
 src/run.py               full pipeline for ONE encoder: preprocessing, targets, 5-fold training, OOF evaluation,
                          post-processing search, candidates + FP filter, test predictions
 src/run_ens.py           same pipeline on the mean of several trained encoders (--ensemble enc:tag,...)
@@ -107,7 +111,7 @@ MEMBERS=':resnet34:128,_cnxt:convnext_tiny:128,_effb3:efficientnet_b3:128,_r50:r
 ```
 
 `inference/infer_ens.py` still reproduces the previous final (GBM filter only). The stage-2 scripts read their trained
-weights from `runs/cnnf/` and `/root/refine/`; the copies in `weights/` will be wired into the inference script and the
+weights from `runs/cnnf/` and `/root/refine_coco/`; the copies in `weights/` will be wired into the inference script and the
 demo notebook.
 
 Note: the training scripts were run on an AutoDL GPU server and assume the base directory `/root/autodl-tmp/`
