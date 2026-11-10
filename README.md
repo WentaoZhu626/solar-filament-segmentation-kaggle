@@ -1,11 +1,18 @@
-# Solar Filament Segmentation 2026 — mask + spine U-Net ensemble
+# Solar Filament Segmentation 2026 — mask + spine U-Net ensemble, CNN judge and boundary refiner
 
 Instance segmentation of solar filaments on GONG H-alpha full-disk images
 ([Kaggle: Solar Filament Segmentation Challenge 2026](https://www.kaggle.com/competitions/filament-segmentation-2026)).
 
-**Final model:** equal-weight ensemble of 3 encoders x 5 folds (15 U-Nets) + spine-guided instance post-processing +
-a learned false-positive filter. Out-of-fold (OOF) PQ **0.4410** on all 707 training observations
-(5-fold GroupKFold by month), public leaderboard 0.39.
+**Current pipeline:** 3 encoders x 5 folds (15 U-Nets) -> spine-guided instances + faint candidates -> keep rule
+0.6 x mean of 5 CNN judges + 0.4 x GBM filter >= 0.4 -> stage-2 boundary refiner (U-Net on a crop around each kept
+filament). Out-of-fold PQ **0.4655** with our rasterisation of the annotations (about **0.459** with the official
+bookkeeping), public leaderboard 0.39.
+
+| stage | OOF PQ (official bookkeeping) |
+|---|---|
+| 15 U-Nets + B + faint candidates + GBM filter (steps 1–7 below) | 0.4406 – 0.4410 |
+| + CNN judge (`docs/CNN_JUDGE.md`) | 0.4481 |
+| + boundary refiner (`docs/BOUNDARY_REFINER.md`) | ~0.459 (0.4655 own rasterisation, +0.011 on 5/5 folds) |
 
 ## Method in one page
 
@@ -34,6 +41,12 @@ a learned false-positive filter. Out-of-fold (OOF) PQ **0.4410** on all 707 trai
    the disk, distance to the nearest large filament, ...) and a gradient-boosting regressor trained out-of-fold to predict
    the fraction of annotators that would match it; candidates with score >= 0.35 are kept. Output instances never overlap.
 
+8. **CNN judge** (`stage2/cnn_filter.py`): a small CNN looks at a 7-channel crop around every candidate (image,
+   probability, candidate mask, 512-px context with the other candidates) and predicts the share of annotators that would
+   match it; 5 backbones x 5 folds are averaged and blended with the GBM score (0.6 / 0.4), keep >= 0.4.
+9. **Boundary refiner** (`stage2/refine.py`): every kept filament is re-segmented by a U-Net on a 256-px crop (image,
+   probability, own mask, other candidates) trained to reproduce the annotators' outline; overlaps resolved by area.
+
 ## Results (OOF PQ, 707 observations)
 
 | model | OOF PQ |
@@ -60,6 +73,9 @@ error is "near misses" (IoU 0.3–0.5: different splitting or extent of long fil
 inference/infer_ens.py   inference only: loads weights/, writes submission.csv (no training)
 inference/demo.ipynb     demo notebook (runs infer_ens.py and shows predictions)
 weights/                 15 fold models (fp16 state dicts) + filter_export.{json,npz} (out-of-fold candidate table)
+                         cnn_judge/<backbone>/fold{0-4}.pth (25 CNN judges), refine/fold{0-4}.pth (boundary refiner)
+stage2/                  CNN judge (cnn_filter.py, cnn_test.py), boundary refiner (refine.py, refine_test.py),
+                         vis_prep.py (rebuilds the out-of-fold candidates and filter features)
 src/run.py               full pipeline for ONE encoder: preprocessing, targets, 5-fold training, OOF evaluation,
                          post-processing search, candidates + FP filter, test predictions
 src/run_ens.py           same pipeline on the mean of several trained encoders (--ensemble enc:tag,...)
@@ -80,6 +96,19 @@ python src/run.py --encoder tu-regnety_032 --tag regy --per_gpu 2
 # ensemble + export of the FP-filter table used by inference
 python src/run_ens.py --tag ens3 --eval_only --ensemble tu-convnext_tiny:cnxt,tu-efficientnet_b4:effb4,tu-regnety_032:regy
 ```
+
+Stage 2 (after the out-of-fold maps of the 3 encoders exist):
+
+```bash
+S=128 TAG= ARCH=resnet34 python stage2/cnn_filter.py crops && S=128 TAG= ARCH=resnet34 python stage2/cnn_filter.py train
+python stage2/refine.py crops && python stage2/refine.py train && python stage2/refine.py eval
+MEMBERS=':resnet34:128,_cnxt:convnext_tiny:128,_effb3:efficientnet_b3:128,_r50:resnet50:128,_r34_192:resnet34:192' \
+  W_CNN=0.6 THR=0.4 python stage2/refine_test.py
+```
+
+`inference/infer_ens.py` still reproduces the previous final (GBM filter only). The stage-2 scripts read their trained
+weights from `runs/cnnf/` and `/root/refine/`; the copies in `weights/` will be wired into the inference script and the
+demo notebook.
 
 Note: the training scripts were run on an AutoDL GPU server and assume the base directory `/root/autodl-tmp/`
 (data in `/root/autodl-tmp/data`, outputs in `/root/autodl-tmp/runs/<tag>/`); adjust these paths for another machine.
