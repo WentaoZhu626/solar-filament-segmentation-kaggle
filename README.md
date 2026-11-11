@@ -13,6 +13,10 @@ filament). Out-of-fold PQ **0.4542** (official bookkeeping, 707 observations), p
 | + CNN judge (`docs/CNN_JUDGE.md`) | 0.4482 |
 | + boundary refiner (`docs/BOUNDARY_REFINER.md`) | **0.4542** (+0.0060, 95 % CI [+0.0040, +0.0081], 5/5 folds) |
 
+Out-of-fold predictions of the final pipeline: `results/oof_final_predictions.csv` (with `results/folds.csv`; loader,
+scoring and overlay figures in `tools/oof_viewer.py`). Error analysis: `docs/ERROR_ANALYSIS_V2.md`. All experiments that
+were tried and not adopted, with numbers and reasons: `docs/FAILED_EXPERIMENTS.md`.
+
 Analyses: `docs/DECISION_THEORY.md` (keep threshold = PQ/2, derived and verified), `docs/CONFLICT_GRAPH.md` (conflict-graph /
 component-tree selection, oracle analysis — not adopted). Tried without gain: D4 TTA (+0.0002), geometric-mean ensemble
 (-0.0045), ensemble-disagreement features (-0.0004), component-tree selection (0.4477 vs 0.4542).
