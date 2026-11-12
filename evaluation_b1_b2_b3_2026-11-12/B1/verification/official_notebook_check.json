@@ -1,0 +1,89 @@
+{
+  "notebook_sha256": "ae7c9445b4eee2b77b216df5c9772fdf92fda15611e98abd7ef5f02a4e380801",
+  "checks": [
+    {
+      "version": "rle_original",
+      "pq_via_notebook": 0.4481215238440107,
+      "checked_dense_matrices": 15,
+      "multiple_matches": [
+        {
+          "file_name": "20160810234034Lh.jpeg",
+          "view_id": "010403-20160810234034Lh",
+          "n_gt": 8,
+          "n_pred": 5,
+          "hits": [
+            {
+              "gt_id": "d38060a1-d7c7-459a-8048-abeb4d6fa7c4",
+              "prediction": "2",
+              "iou": 0.6998981225440256
+            },
+            {
+              "gt_id": "066551fe-8fe4-4678-bbeb-06782e5b3416",
+              "prediction": "2",
+              "iou": 0.7499628142198423
+            },
+            {
+              "gt_id": "8e01c1f1-1e50-49e3-bf98-19ce17a459fd",
+              "prediction": "3",
+              "iou": 0.769281045751634
+            },
+            {
+              "gt_id": "9b811596-f877-462d-bba0-a7e1f1a8bc8f",
+              "prediction": "4",
+              "iou": 0.7326670830730794
+            },
+            {
+              "gt_id": "9da7adf5-a98e-4306-82d1-53d6e0bf4d0c",
+              "prediction": "5",
+              "iou": 0.6541554959785523
+            }
+          ],
+          "fp_unmatched": 1,
+          "fp_n_pred_minus_tp": 0
+        }
+      ]
+    },
+    {
+      "version": "rle_refined",
+      "pq_via_notebook": 0.45413138330436753,
+      "checked_dense_matrices": 15,
+      "multiple_matches": [
+        {
+          "file_name": "20160810234034Lh.jpeg",
+          "view_id": "010403-20160810234034Lh",
+          "n_gt": 8,
+          "n_pred": 5,
+          "hits": [
+            {
+              "gt_id": "d38060a1-d7c7-459a-8048-abeb4d6fa7c4",
+              "prediction": "2",
+              "iou": 0.6985790153581168
+            },
+            {
+              "gt_id": "066551fe-8fe4-4678-bbeb-06782e5b3416",
+              "prediction": "2",
+              "iou": 0.7494495816820784
+            },
+            {
+              "gt_id": "8e01c1f1-1e50-49e3-bf98-19ce17a459fd",
+              "prediction": "3",
+              "iou": 0.7532808398950132
+            },
+            {
+              "gt_id": "9b811596-f877-462d-bba0-a7e1f1a8bc8f",
+              "prediction": "4",
+              "iou": 0.7085173501577287
+            },
+            {
+              "gt_id": "9da7adf5-a98e-4306-82d1-53d6e0bf4d0c",
+              "prediction": "5",
+              "iou": 0.6156716417910447
+            }
+          ],
+          "fp_unmatched": 1,
+          "fp_n_pred_minus_tp": 0
+        }
+      ]
+    }
+  ]
+}

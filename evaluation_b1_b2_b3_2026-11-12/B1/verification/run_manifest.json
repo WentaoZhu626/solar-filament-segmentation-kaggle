@@ -1,0 +1,16 @@
+{
+  "observations": 707,
+  "views": 1154,
+  "predictions": 4375,
+  "no_prediction_observations": 16,
+  "multiple_pq_links": {
+    "rle_original": 1,
+    "rle_refined": 1
+  },
+  "torchmetrics_pair_dice_checks": 13163,
+  "inputs": {
+    "MAGFiLO_1.0_Annotations_kaggle2026_train.json": "5da9e92b5a1a1947fd5d57adb6688269625c48ec1ef884daf2a01618c9ed54a1",
+    "folds.csv": "34b22e48e933e2ff914307e8f97684087e38a2cbed78ac9c8adba874916beb6e",
+    "oof_final_predictions.csv": "2d4e23a8a17909c34fa5be2251da39581fabc1cf35a5772da7430fc44cdf2be1"
+  }
+}

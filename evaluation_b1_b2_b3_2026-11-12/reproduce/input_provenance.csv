@@ -1,0 +1,17 @@
+﻿file,bytes,sha256,source,git_blob_sha1
+folds.csv,18415,34b22e48e933e2ff914307e8f97684087e38a2cbed78ac9c8adba874916beb6e,https://github.com/WentaoZhu626/solar-filament-segmentation-kaggle/blob/main/results/folds.csv,85a59e17913d3eabc605da65a0dfc6e82d010d0a
+MAGFiLO_1.0_Annotations_kaggle2026_train.json,48616700,5da9e92b5a1a1947fd5d57adb6688269625c48ec1ef884daf2a01618c9ed54a1,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+official/kernel-metadata.json,647,9410f771d849de130f8a6197e5b44e7e93e988c8fd24e6d5de5ee34e16ea976c,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+official/self-evaluation-notebook.ipynb,20957,ae7c9445b4eee2b77b216df5c9772fdf92fda15611e98abd7ef5f02a4e380801,https://www.kaggle.com/code/azimahmadzadeh/self-evaluation-notebook,
+oof_final_predictions.csv,2413603,2d4e23a8a17909c34fa5be2251da39581fabc1cf35a5772da7430fc44cdf2be1,https://github.com/WentaoZhu626/solar-filament-segmentation-kaggle/blob/main/results/oof_final_predictions.csv,fe5044ee1ae84c452a4e7975b91e1c765ac48bf4
+repository_BOUNDARY_REFINER.md,2667,54f83dca4588f2b17bd6ae1f419806559f682318e9cbc4754e72eba6a298906e,https://github.com/WentaoZhu626/solar-filament-segmentation-kaggle/blob/main/docs/BOUNDARY_REFINER.md,2756aa98afda6207f14b8f86202f57cdac4d039c
+repository_CNN_JUDGE.md,2400,db926051089fec48eb97095a1bee580ab08573c67e0709be12cc3807a890aeab,https://github.com/WentaoZhu626/solar-filament-segmentation-kaggle/blob/main/docs/CNN_JUDGE.md,21bf6c4155b231b1a0913d5330b15fb5ab4982cd
+train_images/20110114105034Ch.jpeg,870883,a0b3172e4aace9bf552a52f65d730d84c188016514d7aff84447620632e4fcd3,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20110526122534Ch.jpeg,831911,e3fcfaf5de11a1b6ca5c51f2726d6f0d9c462684b1248f8a536a8a7d9b4d095c,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20110601063134Lh.jpeg,804231,933554bbe23628b0ef4d2a03532915b59c5271506fe60d7dcc6a5b7ec28c1d74,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20110617063134Lh.jpeg,825981,0699c9dd2a6514be934714bd498e9e05c0d517715d7c4b661c1e1d0ceead2b41,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20120829063134Lh.jpeg,774624,40e2c6bf94673cab69b5ac18ea8756e0a63c5d6e6bb778ec508afd9bf95f78cd,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20130725122934Ch.jpeg,817701,efd4bb54ab2e4724c5b781855b2198591bf08a69017b57cf2efc1f25eb73cfe1,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20140414020354Uh.jpeg,811382,e728e846685e88e0dd1b1f1b95b24fea1ed5a2b7314d647559b73efad2101f7d,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20141105195814Mh.jpeg,810402,3b626f823f70daf5d7b4d9473adbc5b4df74aabd324e4f820dc9a13a6d813f9a,https://www.kaggle.com/competitions/filament-segmentation-2026/data,
+train_images/20150324145954Bh.jpeg,762372,cc92eb734ff82d496cb51dfdd1c0d62ef4453df8adbdda20c9edb5ac3ad3af84,https://www.kaggle.com/competitions/filament-segmentation-2026/data,

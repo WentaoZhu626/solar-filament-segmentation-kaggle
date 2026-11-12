@@ -1,0 +1,54 @@
+﻿variable,setting,pq,reference,reference_pq,delta_pq,status,scope,source
+keep threshold,0.4,0.4481215238440105,"rle_original, 0.40",0.4481215238440105,0.0,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.425,0.4475084376844012,"rle_original, 0.40",0.4481215238440105,-0.00061309,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.45,0.44616715607815377,"rle_original, 0.40",0.4481215238440105,-0.00195437,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.475,0.44495049281743676,"rle_original, 0.40",0.4481215238440105,-0.00317103,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.5,0.44195725470109914,"rle_original, 0.40",0.4481215238440105,-0.00616427,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.55,0.4362897570145865,"rle_original, 0.40",0.4481215238440105,-0.01183177,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.6,0.4267145453266725,"rle_original, 0.40",0.4481215238440105,-0.02140698,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+minimum B area,400.0,0.4481215238440105,"rle_original, 400 px",0.4481215238440105,0.0,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,450.0,0.4456095192779515,"rle_original, 400 px",0.4481215238440105,-0.002512,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,500.0,0.441384861898128,"rle_original, 400 px",0.4481215238440105,-0.00673666,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,600.0,0.42911393677811815,"rle_original, 400 px",0.4481215238440105,-0.01900759,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,800.0,0.4004329526710316,"rle_original, 400 px",0.4481215238440105,-0.04768857,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+keep threshold,0.4,0.4541313833043674,"rle_refined, 0.40",0.4541313833043674,0.0,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.425,0.45372667943166645,"rle_refined, 0.40",0.4541313833043674,-0.0004047,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.45,0.4517066746006111,"rle_refined, 0.40",0.4541313833043674,-0.00242471,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.475,0.45017605534585764,"rle_refined, 0.40",0.4541313833043674,-0.00395533,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.5,0.44657157587313645,"rle_refined, 0.40",0.4541313833043674,-0.00755981,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.55,0.44056054267364403,"rle_refined, 0.40",0.4541313833043674,-0.01357084,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+keep threshold,0.6,0.4304952595868697,"rle_refined, 0.40",0.4541313833043674,-0.02363612,recomputed,Score threshold applied to all saved masks,fixed_pool_sweeps.csv
+minimum B area,400.0,0.4541313833043674,"rle_refined, 400 px",0.4541313833043674,0.0,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,450.0,0.45154704603472157,"rle_refined, 400 px",0.4541313833043674,-0.00258434,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,500.0,0.4471188560496266,"rle_refined, 400 px",0.4541313833043674,-0.00701253,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,600.0,0.434457164774777,"rle_refined, 400 px",0.4541313833043674,-0.01967422,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+minimum B area,800.0,0.4051052798857986,"rle_refined, 400 px",0.4541313833043674,-0.0490261,recomputed,Prune saved B masks by original area; weak blobs and overlap resolution held fixed,fixed_pool_sweeps.csv
+keep threshold,0.35,,"0.40, final OOF pipeline",,,needs export,Includes candidates rejected at 0.40,All candidate scores and masks
+refiner threshold,0.4,0.4531,"0.50, CNN-judge selection",0.4542,-0.0011,repository experiment,"Same CNN keep set, pycocotools raster",docs/BOUNDARY_REFINER.md
+refiner threshold,0.5,0.4542,"0.50, CNN-judge selection",0.4542,0.0,repository experiment,"Same CNN keep set, pycocotools raster",docs/BOUNDARY_REFINER.md
+refiner threshold,0.6,0.453,"0.50, CNN-judge selection",0.4542,-0.0012,repository experiment,"Same CNN keep set, pycocotools raster",docs/BOUNDARY_REFINER.md
+refiner threshold,0.4,0.4443,"0.50, GBM selection",0.4453,-0.001,repository experiment,"Separate GBM keep set, pycocotools raster",docs/BOUNDARY_REFINER.md
+refiner threshold,0.5,0.4453,"0.50, GBM selection",0.4453,0.0,repository experiment,"Separate GBM keep set, pycocotools raster",docs/BOUNDARY_REFINER.md
+refiner threshold,0.6,0.4446,"0.50, GBM selection",0.4453,-0.0007,repository experiment,"Separate GBM keep set, pycocotools raster",docs/BOUNDARY_REFINER.md
+CNN blend weight,0.6,0.4481215238440105,"0.60, five judges, before refinement",0.4481215238440105,0.0,recomputed baseline,Final CNN keep set with original masks,fixed_pool_sweeps.csv
+CNN blend weight,0.3,,"0.60, five judges, keep threshold 0.40",,,needs export,"Keep five judge scores, GBM and threshold fixed",Unfiltered five judge OOF scores and GBM score
+CNN blend weight,0.5,,"0.60, five judges, keep threshold 0.40",,,needs export,"Keep five judge scores, GBM and threshold fixed",Unfiltered five judge OOF scores and GBM score
+CNN blend weight,0.7,,"0.60, five judges, keep threshold 0.40",,,needs export,"Keep five judge scores, GBM and threshold fixed",Unfiltered five judge OOF scores and GBM score
+minimum B area,250,,"400 px, final OOF pipeline",,,needs export,Regenerate main and faint candidates; rerun judge and refiner,Full-pipeline variant export
+faint probability threshold,0.2,,"0.30, final OOF pipeline",,,needs export,Recompute faint connected components and downstream predictions,Full-pipeline variant export
+faint probability threshold,0.3,0.4541313833043674,"0.30, final OOF pipeline",0.4541313833043674,0.0,recomputed baseline,Baseline export with p > 0.30 weak-candidate generation,fixed_pool_sweeps.csv
+faint probability threshold,0.4,,"0.30, final OOF pipeline",,,needs export,Recompute faint connected components and downstream predictions,Full-pipeline variant export
+faint probability threshold,0.5,,"0.30, final OOF pipeline",,,needs export,Recompute faint connected components and downstream predictions,Full-pipeline variant export
+faint candidates,remove kept faint instances,0.4424304444562153,"all saved masks, rle_original",0.4481215238440105,-0.00569108,recomputed proxy,Remove saved faint masks with all other masks fixed; this is not a probability-threshold sweep,oof_final_predictions.csv
+faint candidates,remove kept faint instances,0.4480781638613882,"all saved masks, rle_refined",0.4541313833043674,-0.00605322,recomputed proxy,Remove saved faint masks with all other masks fixed; this is not a probability-threshold sweep,oof_final_predictions.csv
+judge count,5,0.4481215238440105,"five judges, before refinement",0.4481215238440105,0.0,recomputed baseline,"Final blend weight 0.60, keep threshold 0.40",fixed_pool_sweeps.csv
+judge count,1,,"five judges, blend 0.60, keep threshold 0.40",,,needs export,Use a declared judge order and fix the other controls,Unfiltered per-judge OOF scores
+judge count,2,,"five judges, blend 0.60, keep threshold 0.40",,,needs export,Use a declared judge order and fix the other controls,Unfiltered per-judge OOF scores
+judge count,3,,"five judges, blend 0.60, keep threshold 0.40",,,needs export,Use a declared judge order and fix the other controls,Unfiltered per-judge OOF scores
+judge count,4,,"five judges, blend 0.60, keep threshold 0.40",,,needs export,Use a declared judge order and fix the other controls,Unfiltered per-judge OOF scores
+historical single judge,ResNet34 128,0.4464,"five judges with blend 0.60, reported 0.4481",0.4481,-0.0017,repository experiment,Single judge with blend 0.50; judge count and blend both differ,docs/CNN_JUDGE.md
+historical single judge,ConvNeXt-Tiny 128,0.4469,"five judges with blend 0.60, reported 0.4481",0.4481,-0.0012,repository experiment,Single judge with blend 0.50; judge count and blend both differ,docs/CNN_JUDGE.md
+historical single judge,EfficientNet-B3 128,0.4448,"five judges with blend 0.60, reported 0.4481",0.4481,-0.0033,repository experiment,Single judge with blend 0.50; judge count and blend both differ,docs/CNN_JUDGE.md
+historical single judge,ResNet50 128,0.4475,"five judges with blend 0.60, reported 0.4481",0.4481,-0.0006,repository experiment,Single judge with blend 0.50; judge count and blend both differ,docs/CNN_JUDGE.md
+historical single judge,ResNet34 192,0.4475,"five judges with blend 0.60, reported 0.4481",0.4481,-0.0006,repository experiment,Single judge with blend 0.50; judge count and blend both differ,docs/CNN_JUDGE.md
+historical GBM only,0,0.4406,"five judges with blend 0.60, reported 0.4481",0.4481,-0.0075,repository experiment,Historical comparison; thresholds and judge mix are not controlled,docs/CNN_JUDGE.md

@@ -1,0 +1,148 @@
+[
+  {
+    "category": "annotator_disagreement",
+    "rank_score": 0.8431372549019608,
+    "file_name": "20140414020354Uh.jpeg",
+    "view_id": "010201-20140414020354Uh",
+    "gt_ids": [
+      "c36e6d9f-5b23-4dae-abe2-23df3b425ac7"
+    ],
+    "pred_ids": [
+      10
+    ],
+    "evidence": "Matches one view and has zero overlap in another",
+    "best_iou_by_view": {
+      "010202-20140414020354Uh": 0.0,
+      "010201-20140414020354Uh": 0.8431372549019608
+    }
+  },
+  {
+    "category": "near_limb",
+    "rank_score": 816.606698478527,
+    "file_name": "20141105195814Mh.jpeg",
+    "view_id": "020403-20141105195814Mh",
+    "gt_ids": [
+      "bbce6de1-fa85-42e5-9ab0-d8d8c1c845d1"
+    ],
+    "pred_ids": [
+      3
+    ],
+    "evidence": "Large radial distance from image centre",
+    "iou": 0.6431591083781706,
+    "area_px": 4905,
+    "radius_px": 816.606698478527,
+    "area_over_bbox_length": 21.995515695067265
+  },
+  {
+    "category": "faint",
+    "rank_score": 0.862453531598513,
+    "file_name": "20130725122934Ch.jpeg",
+    "view_id": "030101-20130725122934Ch",
+    "gt_ids": [
+      "596b6254-a021-4735-b188-e93970352629"
+    ],
+    "pred_ids": [
+      8
+    ],
+    "evidence": "Matched instance from the low-probability candidate pool",
+    "iou": 0.862453531598513,
+    "area_px": 514,
+    "radius_px": 314.12179166686286,
+    "area_over_bbox_length": 5.908045977011494
+  },
+  {
+    "category": "small_thin",
+    "rank_score": 0.8347826086956521,
+    "file_name": "20110526122534Ch.jpeg",
+    "view_id": "020101-20110526122534Ch",
+    "gt_ids": [
+      "a228c6df-ac5c-4fe9-bb71-a8182d8dcb5b"
+    ],
+    "pred_ids": [
+      2
+    ],
+    "evidence": "Small, thin GT instance",
+    "iou": 0.8347826086956521,
+    "area_px": 409,
+    "radius_px": 283.4805989834225,
+    "area_over_bbox_length": 6.292307692307692
+  },
+  {
+    "category": "merge",
+    "rank_score": 0.9963031423290203,
+    "file_name": "20110114105034Ch.jpeg",
+    "view_id": "010103-20110114105034Ch",
+    "gt_ids": [
+      "dcde822c-c499-4c91-89c6-1119aa526221",
+      "a445ee72-2ed4-4f10-82c9-1e9e5aefd086"
+    ],
+    "pred_ids": [
+      1
+    ],
+    "evidence": "Single prediction covers at least half of each of two or more GT instances",
+    "gt_coverage": [
+      0.9963031423290203,
+      1.0
+    ],
+    "iou_by_gt": [
+      0.32646880678376744,
+      0.15949060036385687
+    ]
+  },
+  {
+    "category": "split",
+    "rank_score": 0.8983833718244804,
+    "file_name": "20150324145954Bh.jpeg",
+    "view_id": "040401-20150324145954Bh",
+    "gt_ids": [
+      "14f2826d-7bd7-45af-891d-fc89cb638b9f"
+    ],
+    "pred_ids": [
+      4,
+      5
+    ],
+    "evidence": "At least two predictions overlap GT and jointly cover at least half",
+    "covered_fraction": 0.8983833718244804
+  },
+  {
+    "category": "miss",
+    "rank_score": 4500.0,
+    "file_name": "20110601063134Lh.jpeg",
+    "view_id": "030101-20110601063134Lh",
+    "gt_ids": [
+      "32b87f68-5b7b-4241-b0a1-60d57a8f549b"
+    ],
+    "pred_ids": [],
+    "evidence": "GT has zero overlap with every prediction",
+    "area_px": 9392
+  },
+  {
+    "category": "false_positive",
+    "rank_score": 4500.0,
+    "file_name": "20110617063134Lh.jpeg",
+    "view_id": "030101-20110617063134Lh",
+    "gt_ids": [],
+    "pred_ids": [
+      2
+    ],
+    "evidence": "No overlap with any annotation in the available views",
+    "area_px": 8536
+  },
+  {
+    "category": "good",
+    "rank_score": 0.8899630675646317,
+    "file_name": "20120829063134Lh.jpeg",
+    "view_id": "060403-20120829063134Lh",
+    "gt_ids": [
+      "854485e8-5757-435a-9bb7-556102d4de4c"
+    ],
+    "pred_ids": [
+      4
+    ],
+    "evidence": "High-IoU match",
+    "iou": 0.8899630675646317,
+    "area_px": 8895,
+    "radius_px": 363.8529922922168,
+    "area_over_bbox_length": 33.95038167938932
+  }
+]
