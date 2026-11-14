@@ -12,7 +12,7 @@ Example:
     from tools.oof_viewer import load_gt, load_pred, score_image, show
     GT = load_gt(DATA + '/train/MAGFiLO_1.0_Annotations_kaggle2026_train.json')
     PR = load_pred('results/oof_final_predictions.csv')
-    print(score_all(GT, PR))                       # official-style pooled PQ: 0.4542 (0.4482 with rle_original)
+    print(score_all(GT, PR))                       # organizers' pooled PQ: 0.4541 (0.4481 with rle_original)
     show('20140609195854Bh.jpeg', GT, PR, DATA + '/train/train_images/')
 """
 import json
@@ -65,8 +65,10 @@ def score_image(fn, GT, PR):
     """-> array [n_views, 4]: (sum of matched IoU, TP, FP, FN) per annotator view (IoU > 0.5 = match)."""
     preds = PR.get(fn, []); rows = []
     for gts in GT[fn]:
-        T = iou_matrix(preds, gts); tp = int((T > 0.5).sum())
-        rows.append([T[T > 0.5].sum(), tp, len(preds) - tp, len(gts) - tp])
+        T = iou_matrix(preds, gts); hit = T > 0.5; tp = int(hit.sum())   # organizers' notebook: every pair with IoU > 0.5 is a TP
+        fp = int((~hit.any(1)).sum()) if len(preds) else 0            # predictions without any hit
+        fn = int((~hit.any(0)).sum()) if len(gts) else 0              # annotations without any hit
+        rows.append([T[hit].sum(), tp, fp, fn])
     return np.array(rows).reshape(-1, 4)
 
 

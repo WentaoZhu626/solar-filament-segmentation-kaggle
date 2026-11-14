@@ -1,3 +1,4 @@
+--extra-index-url https://download.pytorch.org/whl/cu128
 torch==2.8.0+cu128
 segmentation-models-pytorch==0.6.0
 timm==1.0.31
@@ -11,3 +12,4 @@ scipy==1.18.1
 joblib==1.6.0
 psutil==7.0.0
 matplotlib==3.10.5
+pillow==11.3.0

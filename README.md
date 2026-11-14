@@ -77,9 +77,13 @@ error is "near misses" (IoU 0.3–0.5: different splitting or extent of long fil
 ## Repository layout
 
 ```
-inference/infer_ens.py   inference only: loads weights/, writes submission.csv (no training)
-inference/demo.ipynb     demo notebook (runs infer_ens.py and shows predictions)
-weights/                 15 fold models (fp16 state dicts) + filter_export.{json,npz} (out-of-fold candidate table)
+inference/predict_final.py  FINAL pipeline, inference only: loads weights/, writes submission.csv (no training)
+inference/demo.ipynb     demo notebook: whole pipeline step by step on one image, full test run, check against the
+                         submitted file, OOF evaluation with the organizers' metric, optional retraining
+inference/infer_ens.py   stage 1 only (previous final, GBM filter only)
+tools/oof_viewer.py      organizer-consistent PQ scorer + overlay viewer for the OOF predictions
+weights/                 15 fold models (fp16 state dicts); stage2_filter_table.npz (out-of-fold candidate table of the
+                         GBM filter used by the final pipeline); filter_export.{json,npz} (stage-1 table)
                          cnn_judge/<backbone>/fold{0-4}.pth (25 CNN judges), refine/fold{0-4}.pth (boundary refiner)
 stage2/                  CNN judge (cnn_filter.py, cnn_test.py), boundary refiner (refine.py, refine_test.py),
                          vis_prep.py (rebuilds the out-of-fold candidates and filter features)
@@ -90,15 +94,17 @@ src/run_ens.py           same pipeline on the mean of several trained encoders (
 src/run_sa.py, run_ctx.py, lowres.py   experiments: scale augmentation; two-resolution model (global 1024-px context)
 analysis/                error analysis, visualisations, weight search, stacking, post-processing experiments
 docs/                    experiment logs and analyses
-results/                 per-run OOF result tables (oof_results.json)
+results/                 submission_final.csv (submitted file, public LB 0.40), oof_final_predictions.csv + folds.csv,
+                         per-run OOF result tables (oof_results.json)
 ```
 
 ## Reproduce
 
 ```bash
 pip install -r requirements.txt
-# inference with the stored weights (GPU recommended; ~3 s per image on an RTX 4080)
-python inference/infer_ens.py --test_dir <competition data>/test/test_images --out submission.csv
+# final pipeline with the stored weights (GPU recommended; ~10 s per image on an RTX 4080 SUPER)
+python inference/predict_final.py --test_dir <competition data>/test/test_images --out submission.csv
+# or open inference/demo.ipynb
 # training one encoder (5 folds, ~1.5–2 h on one 32 GB GPU, 2 folds in parallel)
 python src/run.py --encoder tu-regnety_032 --tag regy --per_gpu 2
 # ensemble + export of the FP-filter table used by inference
@@ -114,9 +120,8 @@ MEMBERS=':resnet34:128,_cnxt:convnext_tiny:128,_effb3:efficientnet_b3:128,_r50:r
   W_CNN=0.6 THR=0.4 python stage2/refine_test.py
 ```
 
-`inference/infer_ens.py` still reproduces the previous final (GBM filter only). The stage-2 scripts read their trained
-weights from `runs/cnnf/` and `/root/refine_coco/`; the copies in `weights/` will be wired into the inference script and the
-demo notebook.
+The stage-2 training scripts write their weights to `runs/cnnf/` and `/root/refine_coco/`; the fp16 copies in `weights/` are what
+`inference/predict_final.py` and the demo notebook load.
 
 Note: the training scripts were run on an AutoDL GPU server and assume the base directory `/root/autodl-tmp/`
 (data in `/root/autodl-tmp/data`, outputs in `/root/autodl-tmp/runs/<tag>/`); adjust these paths for another machine.
