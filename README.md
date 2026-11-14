@@ -58,9 +58,9 @@ component-tree selection, oracle analysis — not adopted). Tried without gain: 
    near duplicates). Every number in this README is out-of-fold on all 707 observations, scored with the official PQ
    definition (IoU > 0.5, pooled over every annotator view).
 5. **Ensemble:** mean of the 15 probability maps, horizontal-flip TTA.
-6. **Instances (post-processing B):** threshold 0.5 -> connected components; components touched by the same predicted
-   spine are merged when spine end points are < 30–40 px apart and point at each other (a filament broken by a faint gap
-   stays one instance); min area 400 px.
+6. **Instances (post-processing B):** threshold 0.6 -> connected components; components touched by the same predicted
+   spine are merged when spine end points are < 40 px apart and point at each other (a filament broken by a faint gap
+   stays one instance); main candidates >= 400 px.
 7. **Faint candidates + false-positive filter:** extra candidates = blobs with p > 0.3 outside existing instances;
    every candidate gets 13 features (log area, mean/max p, spine p, elongation, contrast vs. a 15-px ring, radial position on
    the disk, distance to the nearest large filament, ...) and a gradient-boosting regressor trained out-of-fold to predict
