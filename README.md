@@ -11,6 +11,7 @@ filament). Out-of-fold PQ **0.4541** (organizers' evaluation code, 707 observati
 
 | what | where |
 |---|---|
+| Report (4 pages, PDF) | [`Solar_Filament_Segmentation_2026_report.pdf`](Solar_Filament_Segmentation_2026_report.pdf) |
 | Demo notebook (whole pipeline, already executed, outputs included) | [`inference/demo.ipynb`](inference/demo.ipynb) |
 | Inference script used by the notebook | [`inference/predict_final.py`](inference/predict_final.py) |
 | Trained weights (loaded automatically, no download needed) | [`weights/`](weights/): 15 U-Nets, `cnn_judge/` (25 CNN judges), `refine/` (5 boundary refiners), `stage2_filter_table.npz` |
