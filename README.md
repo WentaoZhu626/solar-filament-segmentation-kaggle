@@ -5,13 +5,31 @@ Instance segmentation of solar filaments on GONG H-alpha full-disk images
 
 **Current pipeline:** 3 encoders x 5 folds (15 U-Nets) -> spine-guided instances + faint candidates -> keep rule
 0.6 x mean of 5 CNN judges + 0.4 x GBM filter >= 0.4 -> stage-2 boundary refiner (U-Net on a crop around each kept
-filament). Out-of-fold PQ **0.4542** (official bookkeeping, 707 observations), public leaderboard 0.39.
+filament). Out-of-fold PQ **0.4541** (organizers' evaluation code, 707 observations), public leaderboard **0.40**.
+
+## For the evaluation committee
+
+| what | where |
+|---|---|
+| Demo notebook (whole pipeline, already executed, outputs included) | [`inference/demo.ipynb`](inference/demo.ipynb) |
+| Inference script used by the notebook | [`inference/predict_final.py`](inference/predict_final.py) |
+| Trained weights (loaded automatically, no download needed) | [`weights/`](weights/): 15 U-Nets, `cnn_judge/` (25 CNN judges), `refine/` (5 boundary refiners), `stage2_filter_table.npz` |
+| Our submitted predictions (public LB 0.40) | [`results/submission_final.csv`](results/submission_final.csv) |
+| Out-of-fold predictions on all 707 training observations (PQ 0.4541) | [`results/oof_final_predictions.csv`](results/oof_final_predictions.csv) |
+| Evaluation with the organizers' notebook (Dice, IoU, one-to-many / many-to-one, PQ), examples, sensitivity | [`evaluation_b1_b2_b3_2026-11-12/`](evaluation_b1_b2_b3_2026-11-12/) |
+| Dependencies | [`requirements.txt`](requirements.txt) |
+
+Run: `pip install -r requirements.txt`, then open `inference/demo.ipynb` and run all cells (the competition data is
+found automatically under `/kaggle/input` or `./data`; otherwise set `DATA` in the first cell). Training from scratch is
+optional (`RUN_TRAINING = True` in the notebook); the stored weights reproduce our submission without retraining
+(98.5 % of the regenerated filaments match a submitted one with IoU > 0.9; 7.3 s per image on one RTX 4080 SUPER).
+
 
 | stage | OOF PQ (official bookkeeping) |
 |---|---|
 | 15 U-Nets + B + faint candidates + GBM filter (steps 1–7 below) | 0.4406 |
-| + CNN judge (`docs/CNN_JUDGE.md`) | 0.4482 |
-| + boundary refiner (`docs/BOUNDARY_REFINER.md`) | **0.4542** (+0.0060, 95 % CI [+0.0040, +0.0081], 5/5 folds) |
+| + CNN judge (`docs/CNN_JUDGE.md`) | 0.4481 |
+| + boundary refiner (`docs/BOUNDARY_REFINER.md`) | **0.4541** (+0.0060, 95 % CI [+0.0040, +0.0081], 5/5 folds), LB 0.40 |
 
 Out-of-fold predictions of the final pipeline: `results/oof_final_predictions.csv` (with `results/folds.csv`; loader,
 scoring and overlay figures in `tools/oof_viewer.py`). Error analysis: `docs/ERROR_ANALYSIS_V2.md`. All experiments that
@@ -19,7 +37,7 @@ were tried and not adopted, with numbers and reasons: `docs/FAILED_EXPERIMENTS.m
 
 Analyses: `docs/DECISION_THEORY.md` (keep threshold = PQ/2, derived and verified), `docs/CONFLICT_GRAPH.md` (conflict-graph /
 component-tree selection, oracle analysis — not adopted). Tried without gain: D4 TTA (+0.0002), geometric-mean ensemble
-(-0.0045), ensemble-disagreement features (-0.0004), component-tree selection (0.4477 vs 0.4542).
+(-0.0045), ensemble-disagreement features (-0.0004), component-tree selection (0.4477 vs 0.4541).
 
 ## Method in one page
 
@@ -46,7 +64,7 @@ component-tree selection, oracle analysis — not adopted). Tried without gain: 
 7. **Faint candidates + false-positive filter:** extra candidates = blobs with p > 0.3 outside existing instances;
    every candidate gets 13 features (log area, mean/max p, spine p, elongation, contrast vs. a 15-px ring, radial position on
    the disk, distance to the nearest large filament, ...) and a gradient-boosting regressor trained out-of-fold to predict
-   the fraction of annotators that would match it; candidates with score >= 0.35 are kept. Output instances never overlap.
+   the fraction of annotators that would match it; candidates with score >= 0.35 are kept (stage 1; in the final pipeline this rule is replaced by step 8). Output instances never overlap.
 
 8. **CNN judge** (`stage2/cnn_filter.py`): a small CNN looks at a 7-channel crop around every candidate (image,
    probability, candidate mask, 512-px context with the other candidates) and predicts the share of annotators that would
@@ -54,7 +72,7 @@ component-tree selection, oracle analysis — not adopted). Tried without gain: 
 9. **Boundary refiner** (`stage2/refine.py`): every kept filament is re-segmented by a U-Net on a 256-px crop (image,
    probability, own mask, other candidates) trained to reproduce the annotators' outline (pycocotools raster, as the scorer); overlaps resolved by area.
 
-## Results (OOF PQ, 707 observations)
+## Stage-1 results (single encoders and ensemble, before the CNN judge and the refiner; OOF PQ, 707 observations)
 
 | model | OOF PQ |
 |---|---|
@@ -62,7 +80,9 @@ component-tree selection, oracle analysis — not adopted). Tried without gain: 
 | ConvNeXt-Tiny | 0.4319 (LB 0.38) |
 | EfficientNet-B4 | 0.4287 |
 | RegNetY-032 | 0.4332 |
-| **ensemble ConvNeXt-T + EffNet-B4 + RegNetY (final)** | **0.4410 (LB 0.39)** |
+| **ensemble ConvNeXt-T + EffNet-B4 + RegNetY (stage 1)** | **0.4410 (LB 0.39)** |
+
+These stage-1 numbers use our own bookkeeping (0.4406 with the organizers' code); the final pipeline (stage 1 + CNN judge + refiner) reaches 0.4541 / LB 0.40, see the table at the top.
 
 Tried and rejected (all OOF, details in `docs/`): neighbouring GONG frames with transferred labels (-0.004),
 multi-scale TTA (-0.003), thinner masks for small filaments (-0.001 to -0.008), longer spine links (-0.006),
@@ -94,6 +114,7 @@ src/run_ens.py           same pipeline on the mean of several trained encoders (
 src/run_sa.py, run_ctx.py, lowres.py   experiments: scale augmentation; two-resolution model (global 1024-px context)
 analysis/                error analysis, visualisations, weight search, stacking, post-processing experiments
 docs/                    experiment logs and analyses
+evaluation_b1_b2_b3_2026-11-12/   evaluation with the organizers' notebook (B1), example gallery (B2), sensitivity (B3)
 results/                 submission_final.csv (submitted file, public LB 0.40), oof_final_predictions.csv + folds.csv,
                          per-run OOF result tables (oof_results.json)
 ```
@@ -102,7 +123,7 @@ results/                 submission_final.csv (submitted file, public LB 0.40), 
 
 ```bash
 pip install -r requirements.txt
-# final pipeline with the stored weights (GPU recommended; ~10 s per image on an RTX 4080 SUPER)
+# final pipeline with the stored weights (GPU recommended; ~7.3 s per image on an RTX 4080 SUPER)
 python inference/predict_final.py --test_dir <competition data>/test/test_images --out submission.csv
 # or open inference/demo.ipynb
 # training one encoder (5 folds, ~1.5–2 h on one 32 GB GPU, 2 folds in parallel)
